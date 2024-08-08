@@ -1,8 +1,20 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
 
-Vue.config.productionTip = false
+import store from './store';
+// import BaseBadge from './components/ui/BaseBadge.vue';
 
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+// Create the Vue instance
+const app = new Vue({
+  router,
+ 
+  store,
+  render: h => h(App)
+});
+
+// Register global components (if needed)
+// Vue.component('base-badge', BaseBadge);
+
+// Mount the app to the DOM
+app.$mount('#app');
