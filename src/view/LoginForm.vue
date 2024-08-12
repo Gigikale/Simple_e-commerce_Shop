@@ -41,20 +41,48 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       email: '',
       password: '',
+      successMessage: null,
+      error: null,
     };
   },
   methods: {
-    login() {
+    async login() {
+      this.error = null;
+      this.successMessage = null;
       if (this.validateForm()) {
-        // Redirect to homepage after successful login
-        window.location.href = '/'; 
+        try {
+          const response = await axios.post('http://localhost:3000/api/login', {
+            email: this.email,
+            password: this.password,
+          });
+
+          if (response.data.token) {
+            // Save the token (for example, in localStorage)
+            localStorage.setItem('token', response.data.token);
+
+            console.log('Login successful', response.data);
+
+           setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+          } else {
+            console.log('Login failed, show error message');
+            // You could set an error message in the component state here
+          }
+        } catch (error) {
+          console.error('An error occurred during login:', error.response?.data || error.message);
+          // Show error message to the user
+        }
       } else {
         console.log('Form is invalid, show error message');
+        // You could set an error message in the component state here
       }
     },
     validateForm() {
@@ -112,6 +140,11 @@ export default {
   color: #333;
 }
 
+.success-message {
+  color: green;
+  margin-bottom: 10px;
+}
+
 .submit-button {
   background-color: #007bff;
   color: white;
@@ -124,5 +157,9 @@ export default {
 
 .submit-button:hover {
   background-color: #0056b3;
+}
+.success-message {
+  color: green;
+  margin-top: 1rem;
 }
 </style>

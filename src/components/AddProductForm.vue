@@ -1,59 +1,66 @@
 <template>
-  <li class="product">
-    <div class="product__data">
-      <div class="product__image">
-        <img :src="image" :alt="name" />
-      </div>
-      <div class="product__text">
-        <h3>{{ name }}</h3>
-        <base-badge mode="highlight" :no-margin-left="true">
-          <template #default>
-            <h4>${{ price }}</h4>
-          </template>
-        </base-badge>
-        <p>{{ description }}</p>
-      </div>
-    </div>
-    <div class="product__actions">
-      <button @click="addProduct">Add Product</button>
-    </div>
-  </li>
+  <div>
+    <form @submit.prevent="handleSubmit">
+      <input v-model="name" placeholder="Name" />
+      <textarea v-model="description" placeholder="Description"></textarea>
+      <input v-model="price" type="number" placeholder="Price" />
+      <input v-model="stock" type="number" placeholder="Stock" />
+      <input type="file" @change="handleFileUpload" />
+      <button type="submit">Add Product</button>
+    </form>
+    <img v-if="imageUrl" :src="imageUrl" alt="Product Image" />
+  </div>
 </template>
 
 <script>
+import cloudinary from '@/cloudinary';
+
 export default {
-  name: 'ProductItem',
-  props: {
-    id: {
-      type: [String, Number],
-      required: true
-    },
-    image: {
-      type: String,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    price: {
-      type: Number,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    }
+  data() {
+    return {
+      name: '',
+      description: '',
+      price: '',
+      stock: '',
+      imageFile: null,
+      imageUrl: ''
+    };
   },
   methods: {
-    addProduct() {
-      this.$store.dispatch('addProduct/addProductToCart', {
-        id: this.id
+    async handleFileUpload(event) {
+      this.imageFile = event.target.files[0];
+
+      if (this.imageFile) {
+        const formData = new FormData();
+        formData.append('file', this.imageFile);
+        formData.append('upload_preset', 'simple-shop'); // Replace with your upload preset
+
+        try {
+          const response = await fetch(`https://api.cloudinary.com/v1_1/productimg/image/upload`, {
+            method: 'POST',
+            body: formData
+          });
+          const data = await response.json();
+          this.imageUrl = data.secure_url;
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
+      }
+    },
+    async handleSubmit() {
+      // Your logic to submit the form, including the imageUrl
+      console.log({
+        name: this.name,
+        description: this.description,
+        price: this.price,
+        stock: this.stock,
+        image: this.imageUrl
       });
     }
   }
 };
 </script>
+
 
 <style scoped>
 .product {

@@ -72,6 +72,7 @@
           </button>
         </div>
         <div v-if="error" class="error-message">{{ error }}</div>
+        <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       </div>
     </form>
   </div>
@@ -87,11 +88,14 @@ export default {
       password: '',
       confirmPassword: '',
       error: null,
+      successMessage: null,
     };
   },
   methods: {
     async signup() {
       this.error = null;
+      this.successMessage = null;
+
       // Simple validation
       if (!this.fullName || !this.email || !this.username || !this.password || !this.confirmPassword) {
         this.error = 'All fields are required.';
@@ -103,7 +107,7 @@ export default {
       }
       try {
         // Mock API request
-        const response = await fetch('http://localhost:8085/signup/api/register', {
+        const response = await fetch('http://localhost:3000/api/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +119,6 @@ export default {
             password: this.password,
           }),
         });
-        console.log(response);
 
         if (!response.ok) {
           throw new Error('Signup failed');
@@ -123,7 +126,15 @@ export default {
 
         const data = await response.json();
         console.log('Signup successful', data);
-        // Redirect or perform other actions upon successful signup
+
+        // Set success message
+        this.successMessage = 'Signup successful! Redirecting to login...';
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+
       } catch (error) {
         this.error = error.message;
       }
@@ -203,6 +214,10 @@ export default {
 
 .error-message {
   color: red;
+  margin-top: 1rem;
+}
+.success-message {
+  color: green;
   margin-top: 1rem;
 }
 </style>

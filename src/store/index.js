@@ -1,7 +1,7 @@
 // src/store/index.js
 import Vue from 'vue';
 import Vuex from 'vuex';
-import productsModule from './modules/products';
+import productsModule from './modules/productService';
 
 Vue.use(Vuex);
 

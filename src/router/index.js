@@ -4,7 +4,7 @@ import LoginForm from '../view/LoginForm.vue';
 import SignUp from '../view/SignUp.vue';
 import HomePage from "../components/HomePage.vue";
 import ProductList from '../view/ProductList.vue';
-import AddedProduct from '../view/AddedProduct.vue';
+import AddProduct from '../view/AddProduct.vue';
 
 
 // import ShopAdmin from '../views/ShopAdmin.vue';
@@ -27,7 +27,7 @@ const routes = [
   },
   {
     path: '/add-product',
-    component: AddedProduct,
+    component: AddProduct,
   },
   {
     path: '/login',

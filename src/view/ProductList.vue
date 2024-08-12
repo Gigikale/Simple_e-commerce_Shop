@@ -1,51 +1,77 @@
 <template>
-  <div class="product-list">
-    <div class="search-bar">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Search products..."
-        class="search-input"
-      />
-    </div>
-    <div class="product" v-for="product in filteredProducts" :key="product.id">
-      <img :src="product.image" :alt="product.title" class="product-image" />
-      <h2 class="product-title">{{ product.title }}</h2>
-      <p class="product-description">{{ product.description }}</p>
-      <p class="product-price">
-        <span class="price-symbol">₦</span>{{ product.price.toFixed(2) }}
-      </p>
-      <!-- Add Product Button -->
-      <button @click="addProduct(product)" class="add-product-button">Add Product</button>
+  <div>
+    <TheHeader />
+    <div class="product-list">
+      <div class="search-bar">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search products..."
+          class="search-input"
+        />
+      </div>
+      <div
+        class="product"
+        v-for="product in filteredProducts"
+        :key="product.id"
+      >
+        <img
+          :src="product.image"
+          :alt="product.name"
+          class="product-image"
+          @error="handleImageError"
+        />
+        <h2 class="product-title">{{ product.name }}</h2>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="product-price">
+          <span class="price-symbol">₦</span>{{ product.price.toFixed(2) }}
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import TheHeader from "../components/TheHeader.vue";
+import axios from "axios";
 
 export default {
+  components: {
+    TheHeader,
+  },
   data() {
     return {
-      searchQuery: '',
+      searchQuery: "",
+      products: [],  // Initialize an empty array to store the products
     };
   },
   computed: {
-    ...mapGetters('products', ['products']),
     filteredProducts() {
       const query = this.searchQuery.toLowerCase();
-      return this.products.filter(product => 
-        product.title.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query)
+      return this.products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query)
       );
     },
   },
   methods: {
-    addProduct(product) {
-      // Logic for adding a product goes here
-      // For example, you might dispatch an action to Vuex or trigger a modal
-      alert(`Product added: ${product.title}`);
+    async fetchProducts() {
+      try {
+        const response = await axios.get("http://localhost:3000/api/all-products");
+        console.log("API Response:", response.data.data); // Log the API response
+        this.products = response.data.data || []; // Fallback to an empty array if products is undefined
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        alert("Failed to fetch products.");
+      }
     },
+    handleImageError(event) {
+      event.target.src = 'https://via.placeholder.com/150'; // Fallback image if there’s an error
+    },
+  },
+  mounted() {
+    this.fetchProducts();  // Fetch products when the component is mounted
   },
 };
 </script>
@@ -108,14 +134,14 @@ export default {
   color: #333;
   font-size: 1.5em;
   margin: 15px 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .product-description {
   color: #666;
   font-size: 1em;
   margin-bottom: 15px;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 .product-price {
