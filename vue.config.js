@@ -1,7 +1,7 @@
 
 module.exports = {
   devServer: {
-    proxy: 'https://mini-shop-9nyv.onrender.com'
+    proxy: 'https://mini-shop-kq17.onrender.com'
   }
 };
 
