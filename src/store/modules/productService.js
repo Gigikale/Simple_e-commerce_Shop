@@ -20,7 +20,7 @@ const productService = {
 
   async addProduct(productData) {
     try {
-      const response = await fetch('http://localhost:3000/api/add-product', {
+      const response = await fetch('https://mini-shop-kq17.onrender.com/api/add-product', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

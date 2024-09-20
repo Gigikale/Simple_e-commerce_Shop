@@ -58,7 +58,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get("http://localhost:3000/api/all-products");
+        const response = await axios.get("https://mini-shop-kq17.onrender.com/api/all-products");
         console.log("API Response:", response.data.data); // Log the API response
         this.products = response.data.data || []; // Fallback to an empty array if products is undefined
       } catch (error) {

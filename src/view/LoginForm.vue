@@ -58,7 +58,7 @@ export default {
       this.successMessage = null;
       if (this.validateForm()) {
         try {
-          const response = await axios.post('http://localhost:3000/api/login', {
+          const response = await axios.post('https://mini-shop-kq17.onrender.com/api/login', {
             email: this.email,
             password: this.password,
           });
